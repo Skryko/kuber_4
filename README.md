@@ -1,19 +1,3 @@
-Ниже готовый README.md. Скопируй его полностью в файл README.md. В местах ВСТАВИТЬ СКРИНШОТ просто вставишь свои изображения.
-
-Домашнее задание к занятию «Хранение в K8s»
-
-Цель работы
-
-В рамках домашнего задания была выполнена работа с хранилищами в Kubernetes:
-
-* настроен обмен файлами между контейнерами внутри одного Pod с помощью emptyDir;
-* создан PersistentVolume и PersistentVolumeClaim для подключения локального хранилища;
-* создан StorageClass и подключение хранилища через PVC;
-* проверено поведение PV после удаления Deployment и PVC.
-
-Работа выполнялась в тестовом Kubernetes-кластере Minikube.
-
-⸻
 
 Задание 1. Volume: обмен данными между контейнерами в Pod
 
@@ -71,21 +55,20 @@ spec:
 
 kubectl apply -f containers-data-exchange.yaml
 
-Проверка Pod
-
 kubectl get pods
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pods
+![photo](2.1.png)
 
 Описание Pod
 
 kubectl describe pods -l app=data-exchange
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl describe pods -l app=data-exchange
+![photo](1-1.png)
 
 Проверка чтения файла контейнером multitool
 
 kubectl logs -f deployment/data-exchange -c multitool
+
 
 Результат:
 
@@ -94,7 +77,7 @@ Sun Jun 28 00:20:29 UTC 2026 - message from busybox
 Sun Jun 28 00:20:34 UTC 2026 - message from busybox
 Sun Jun 28 00:20:39 UTC 2026 - message from busybox
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl logs -f deployment/data-exchange -c multitool
+![photo](1-1.2.png)
 
 Вывод по заданию 1
 
@@ -120,7 +103,7 @@ minikube ssh "sudo mkdir -p /mnt/data-k8s/pv && sudo chmod 777 /mnt/data-k8s/pv"
 
 minikube ssh "ls -ld /mnt/data-k8s/pv"
 
-ВСТАВИТЬ СКРИНШОТ проверки директории /mnt/data-k8s/pv
+![photo](2-2.png)
 
 Манифест
 
@@ -203,7 +186,7 @@ kubectl get pv
 NAME               CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS
 data-exchange-pv   1Gi        RWO            Retain           Bound    default/data-exchange-pvc
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pv
+![photo](2-1.png)
 
 Проверка PVC
 
@@ -214,7 +197,6 @@ kubectl get pvc
 NAME                STATUS   VOLUME             CAPACITY   ACCESS MODES   STORAGECLASS
 data-exchange-pvc   Bound    data-exchange-pv   1Gi        RWO
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pvc
 
 Проверка Pod
 
@@ -225,7 +207,6 @@ kubectl get pods -l app=data-exchange-pvc
 NAME                                 READY   STATUS    RESTARTS   AGE
 data-exchange-pvc-56fbbbf46d-499xl   2/2     Running   0          45s
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pods -l app=data-exchange-pvc
 
 Проверка чтения файла контейнером multitool
 
@@ -237,13 +218,12 @@ Sun Jun 28 00:27:41 UTC 2026 - message from busybox to PV
 Sun Jun 28 00:27:46 UTC 2026 - message from busybox to PV
 Sun Jun 28 00:27:51 UTC 2026 - message from busybox to PV
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl logs -f deployment/data-exchange-pvc -c multitool
 
 Проверка файла на локальной ноде
 
 minikube ssh "ls -l /mnt/data-k8s/pv && cat /mnt/data-k8s/pv/pv-file.txt"
 
-ВСТАВИТЬ СКРИНШОТ проверки файла на ноде
+![photo](2-3.png)
 
 Удаление Deployment и PVC
 
@@ -258,8 +238,6 @@ kubectl get pv
 
 NAME               CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                       STORAGECLASS
 data-exchange-pv   1Gi        RWO            Retain           Released   default/data-exchange-pvc
-
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pv после удаления PVC
 
 Подробное описание PV:
 
@@ -279,7 +257,7 @@ Source:
     Type:          HostPath
     Path:          /mnt/data-k8s/pv
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl describe pv data-exchange-pv
+ 
 
 Объяснение поведения PV после удаления PVC
 
@@ -297,7 +275,6 @@ minikube ssh "ls -l /mnt/data-k8s/pv && cat /mnt/data-k8s/pv/pv-file.txt"
 
 Результат показывает, что файл pv-file.txt сохранился на локальном диске ноды.
 
-ВСТАВИТЬ СКРИНШОТ проверки файла после удаления Deployment и PVC
 
 Удаление PV
 
@@ -307,13 +284,10 @@ kubectl delete pv data-exchange-pv
 
 kubectl get pv
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pv после удаления PV
 
 Проверка файла после удаления PV
 
 minikube ssh "ls -l /mnt/data-k8s/pv && cat /mnt/data-k8s/pv/pv-file.txt"
-
-ВСТАВИТЬ СКРИНШОТ проверки файла после удаления PV
 
 Объяснение поведения файла после удаления PV
 
@@ -346,8 +320,6 @@ minikube ssh "sudo mkdir -p /mnt/data-k8s/sc && sudo chmod 777 /mnt/data-k8s/sc"
 Проверка директории:
 
 minikube ssh "ls -ld /mnt/data-k8s/sc"
-
-ВСТАВИТЬ СКРИНШОТ проверки директории /mnt/data-k8s/sc
 
 Манифест
 
@@ -440,37 +412,34 @@ kubectl apply -f sc.yaml
 
 kubectl get sc
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get sc
+
 
 Проверка PV
 
 kubectl get pv
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pv
+
 
 Проверка PVC
 
 kubectl get pvc
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pvc
 
 Проверка Pod
 
 kubectl get pods -l app=data-exchange-sc
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl get pods -l app=data-exchange-sc
-
+![photo](3-1.png)
 Проверка чтения файла контейнером multitool
 
 kubectl logs -f deployment/data-exchange-sc -c multitool
 
-ВСТАВИТЬ СКРИНШОТ вывода kubectl logs -f deployment/data-exchange-sc -c multitool
 
 Проверка файла на локальной ноде
 
 minikube ssh "cat /mnt/data-k8s/sc/sc-file.txt"
 
-ВСТАВИТЬ СКРИНШОТ проверки файла /mnt/data-k8s/sc/sc-file.txt
+![photo](3-2.png)
 
 Вывод по заданию 3
 
